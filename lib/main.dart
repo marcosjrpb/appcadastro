@@ -63,13 +63,22 @@ class _HomeState extends State<Home> {
 
   Future<void> _salvar() async {
     try {
-      final user = User(id: 1, nome: 'Marcos Jr', idade: 58);
-      final id = await DatabaseHelper.insertUser(user);
-
-
-      print('Salvo: ID: ${user.id}, Nome: ${user.nome}');
+      User(id: 1, nome: 'Marcos Jr', idade: 58);
+      await _listarUsuarios();
     } catch (e) {
       print('Erro ao salvar: $e');
+    }
+  }
+
+
+  _listarUsuarios() async {
+    try {
+      final db = await DatabaseHelper._openDatabase();
+      final List<Map<String, dynamic>> usuarios = await db.query('usuarios');
+
+      usuarios.forEach((usuario) => print('ID: ${usuario['id']}, Nome: ${usuario['nome']}, Idade: ${usuario['idade']}'));
+    } catch (e) {
+      print('Erro ao listar usuários: $e');
     }
   }
 
