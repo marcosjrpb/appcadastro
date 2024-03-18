@@ -65,7 +65,9 @@ class _HomeState extends State<Home> {
     try {
       final user = User(id: 1, nome: 'Marcos Jr', idade: 58);
       final id = await DatabaseHelper.insertUser(user);
-      print('Salvo: $id');
+
+
+      print('Salvo: ID: ${user.id}, Nome: ${user.nome}');
     } catch (e) {
       print('Erro ao salvar: $e');
     }
