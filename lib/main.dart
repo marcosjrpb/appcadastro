@@ -63,27 +63,56 @@ class _HomeState extends State<Home> {
 
   Future<void> _salvar() async {
     try {
-      User(id: 1, nome: 'Marcos Jr', idade: 58);
+      await DatabaseHelper.insertUser(User(id: 1, nome: 'Marcos Jr', idade: 51));
+      await DatabaseHelper.insertUser(User(id: 2, nome: 'Jonas ', idade: 48));
+      await DatabaseHelper.insertUser(User(id: 3, nome: 'Maria Luiza', idade: 12));
+      await DatabaseHelper.insertUser(User(id: 4, nome: 'João Lucas', idade: 8));
+      await DatabaseHelper.insertUser(User(id: 5, nome: 'Antonio', idade: 37));
       await _listarUsuarios();
     } catch (e) {
       print('Erro ao salvar: $e');
     }
   }
 
-
-  _listarUsuarios() async {
+  Future<void> _listarUsuarios() async {
     try {
       final db = await DatabaseHelper._openDatabase();
       final List<Map<String, dynamic>> usuarios = await db.query('usuarios');
 
-      usuarios.forEach((usuario) => print('ID: ${usuario['id']}, Nome: ${usuario['nome']}, Idade: ${usuario['idade']}'));
+      usuarios.forEach((usuario) =>
+          print(
+              'ID: ${usuario['id']},'
+                  ' Nome: ${usuario['nome']},'
+                  ' Idade: ${usuario['idade']}'
+                  ''));
     } catch (e) {
       print('Erro ao listar usuários: $e');
     }
   }
 
+  Future<void> _recuperarusuarioPeloId(int id) async {
+    try {
+      final db = await DatabaseHelper._openDatabase();
+      final List<Map<String, dynamic>> usuarios =
+      await db.query('usuarios',
+          columns: ["id", "nome", "idade"], where: "id = ?", whereArgs: [id]);
+
+      usuarios.forEach((usuario) =>
+          print("resultado: "
+              'ID: ${usuario['id']},'
+                  ' Nome: ${usuario['nome']},'
+                  ' Idade: ${usuario['idade']}'
+                  ''));
+
+
+    } catch (e) {
+      print('Erro ao recuperar usuário pelo ID: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    _recuperarusuarioPeloId(5);
     return Container();
   }
 }
