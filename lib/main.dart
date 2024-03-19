@@ -44,6 +44,15 @@ class DatabaseHelper {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
+
+  static Future<void> deleteUser(int id) async {
+    final db = await _openDatabase();
+    await db.delete(
+      'usuarios',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
 }
 
 class Home extends StatefulWidget {
@@ -63,27 +72,72 @@ class _HomeState extends State<Home> {
 
   Future<void> _salvar() async {
     try {
-      User(id: 1, nome: 'Marcos Jr', idade: 58);
-      await _listarUsuarios();
+      await DatabaseHelper.insertUser(User(id: 1, nome: 'Marcos Jr', idade: 51));
+      await DatabaseHelper.insertUser(User(id: 2, nome: 'Jonas ', idade: 48));
+      await DatabaseHelper.insertUser(User(id: 3, nome: 'Maria Luiza', idade: 12));
+      await DatabaseHelper.insertUser(User(id: 4, nome: 'João Lucas', idade: 8));
+      await DatabaseHelper.insertUser(User(id: 5, nome: 'Antonio', idade: 37));
     } catch (e) {
       print('Erro ao salvar: $e');
     }
   }
 
-
-  _listarUsuarios() async {
+  Future<void> _listarUsuarios() async {
     try {
       final db = await DatabaseHelper._openDatabase();
       final List<Map<String, dynamic>> usuarios = await db.query('usuarios');
 
-      usuarios.forEach((usuario) => print('ID: ${usuario['id']}, Nome: ${usuario['nome']}, Idade: ${usuario['idade']}'));
+      usuarios.forEach((usuario) =>
+          print(
+              'ID: ${usuario['id']},'
+                  ' Nome: ${usuario['nome']},'
+                  ' Idade: ${usuario['idade']}'
+                  ''));
+      print("------------------------------------------ \n");
     } catch (e) {
       print('Erro ao listar usuários: $e');
     }
   }
 
+  Future<void> _recuperarusuarioPeloId(int id) async {
+    try {
+      final db = await DatabaseHelper._openDatabase();
+      final List<Map<String, dynamic>> usuarios = await db.query(
+        'usuarios',
+        columns: ["id", "nome", "idade"],
+        where: "id = ?",
+        whereArgs: [id],
+      );
+
+      usuarios.forEach((usuario) =>
+          print("Resultado: "
+              'ID: ${usuario['id']},'
+              ' Nome: ${usuario['nome']},'
+              ' Idade: ${usuario['idade']}'
+              ''));
+
+      print("------------------------------------------ \n");
+    } catch (e) {
+      print('Erro ao recuperar usuário pelo ID: $e');
+    }
+  }
+
+  Future<void> _excluirUsuario(int id) async {
+    try {
+      await DatabaseHelper.deleteUser(id);
+      print('Usuário excluído com sucesso! $id');
+      print("------------------------------------------ \n");
+      _listarUsuarios();
+    } catch (e) {
+      print('Erro ao excluir usuário pelo ID: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    _recuperarusuarioPeloId(5);
+    _excluirUsuario(2);
+
     return Container();
   }
 }
