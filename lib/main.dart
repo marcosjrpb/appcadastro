@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+
 // criado por Marcos Jr
 void main() => runApp(MaterialApp(home: Home()));
 
@@ -35,24 +36,6 @@ class DatabaseHelper {
       },
     );
   }
-
-  static Future<int> insertUser(User user) async {
-    final db = await _openDatabase();
-    return await db.insert(
-      'usuarios',
-      user.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-  }
-
-  static Future<void> deleteUser(int id) async {
-    final db = await _openDatabase();
-    await db.delete(
-      'usuarios',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
-  }
 }
 
 class Home extends StatefulWidget {
@@ -72,11 +55,11 @@ class _HomeState extends State<Home> {
 
   Future<void> _salvar() async {
     try {
-      await DatabaseHelper.insertUser(User(id: 1, nome: 'Marcos Jr', idade: 51));
-      await DatabaseHelper.insertUser(User(id: 2, nome: 'Jonas ', idade: 48));
-      await DatabaseHelper.insertUser(User(id: 3, nome: 'Maria Luiza', idade: 12));
-      await DatabaseHelper.insertUser(User(id: 4, nome: 'João Lucas', idade: 8));
-      await DatabaseHelper.insertUser(User(id: 5, nome: 'Antonio', idade: 37));
+      await (id: 1, nome: 'Marcos Jr', idade: 51);
+      await (id: 2, nome: 'Jonas ', idade: 48);
+      await (id: 3, nome: 'Maria Luiza', idade: 12);
+      await (id: 4, nome: 'João Lucas', idade: 8);
+      await (id: 5, nome: 'Antonio', idade: 37);
     } catch (e) {
       print('Erro ao salvar: $e');
     }
@@ -87,12 +70,10 @@ class _HomeState extends State<Home> {
       final db = await DatabaseHelper._openDatabase();
       final List<Map<String, dynamic>> usuarios = await db.query('usuarios');
 
-      usuarios.forEach((usuario) =>
-          print(
-              'ID: ${usuario['id']},'
-                  ' Nome: ${usuario['nome']},'
-                  ' Idade: ${usuario['idade']}'
-                  ''));
+      usuarios.forEach((usuario) => print('ID: ${usuario['id']},'
+          ' Nome: ${usuario['nome']},'
+          ' Idade: ${usuario['idade']}'
+          ''));
       print("------------------------------------------ \n");
     } catch (e) {
       print('Erro ao listar usuários: $e');
@@ -109,12 +90,11 @@ class _HomeState extends State<Home> {
         whereArgs: [id],
       );
 
-      usuarios.forEach((usuario) =>
-          print("Resultado: "
-              'ID: ${usuario['id']},'
-              ' Nome: ${usuario['nome']},'
-              ' Idade: ${usuario['idade']}'
-              ''));
+      usuarios.forEach((usuario) => print("Resultado: "
+          'ID: ${usuario['id']},'
+          ' Nome: ${usuario['nome']},'
+          ' Idade: ${usuario['idade']}'
+          ''));
 
       print("------------------------------------------ \n");
     } catch (e) {
@@ -122,12 +102,24 @@ class _HomeState extends State<Home> {
     }
   }
 
+  Future<void> _atualizarUsuario(int id) async {
+    final bd = await DatabaseHelper._openDatabase();
+    Map<String, Object> dadosUsuarios =
+        await {"nome": "carlos Lins", "idade": 24};
+    bd.update("usuarios", dadosUsuarios, where: "id = ?", whereArgs: [id]);
+
+    try {
+      print('Usuário Atualizado com sucesso! $id');
+      ;
+    } catch (e) {
+      print('Erro ao excluir usuário pelo ID: $e');
+    }
+  }
+
   Future<void> _excluirUsuario(int id) async {
     try {
-      await DatabaseHelper.deleteUser(id);
       print('Usuário excluído com sucesso! $id');
       print("------------------------------------------ \n");
-      _listarUsuarios();
     } catch (e) {
       print('Erro ao excluir usuário pelo ID: $e');
     }
@@ -137,7 +129,8 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     _recuperarusuarioPeloId(5);
     _excluirUsuario(2);
-
+    _atualizarUsuario(5);
+    _listarUsuarios();
     return Container();
   }
 }
