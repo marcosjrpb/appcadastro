@@ -77,6 +77,10 @@ class _HomeState extends State<Home> {
       await DatabaseHelper.insertUser(User(id: 3, nome: 'Maria Luiza', idade: 12));
       await DatabaseHelper.insertUser(User(id: 4, nome: 'João Lucas', idade: 8));
       await DatabaseHelper.insertUser(User(id: 5, nome: 'Antonio', idade: 37));
+<<<<<<< HEAD
+=======
+      await _listarUsuarios();
+>>>>>>> 32f595b625bbd7fafb6d459949a17517e8078c79
     } catch (e) {
       print('Erro ao salvar: $e');
     }
@@ -93,7 +97,10 @@ class _HomeState extends State<Home> {
                   ' Nome: ${usuario['nome']},'
                   ' Idade: ${usuario['idade']}'
                   ''));
+<<<<<<< HEAD
       print("------------------------------------------ \n");
+=======
+>>>>>>> 32f595b625bbd7fafb6d459949a17517e8078c79
     } catch (e) {
       print('Erro ao listar usuários: $e');
     }
@@ -102,6 +109,7 @@ class _HomeState extends State<Home> {
   Future<void> _recuperarusuarioPeloId(int id) async {
     try {
       final db = await DatabaseHelper._openDatabase();
+<<<<<<< HEAD
       final List<Map<String, dynamic>> usuarios = await db.query(
         'usuarios',
         columns: ["id", "nome", "idade"],
@@ -117,11 +125,26 @@ class _HomeState extends State<Home> {
               ''));
 
       print("------------------------------------------ \n");
+=======
+      final List<Map<String, dynamic>> usuarios =
+      await db.query('usuarios',
+          columns: ["id", "nome", "idade"], where: "id = ?", whereArgs: [id]);
+
+      usuarios.forEach((usuario) =>
+          print("resultado: "
+              'ID: ${usuario['id']},'
+                  ' Nome: ${usuario['nome']},'
+                  ' Idade: ${usuario['idade']}'
+                  ''));
+
+
+>>>>>>> 32f595b625bbd7fafb6d459949a17517e8078c79
     } catch (e) {
       print('Erro ao recuperar usuário pelo ID: $e');
     }
   }
 
+<<<<<<< HEAD
   Future<void> _excluirUsuario(int id) async {
     try {
       await DatabaseHelper.deleteUser(id);
@@ -138,6 +161,11 @@ class _HomeState extends State<Home> {
     _recuperarusuarioPeloId(5);
     _excluirUsuario(2);
 
+=======
+  @override
+  Widget build(BuildContext context) {
+    _recuperarusuarioPeloId(5);
+>>>>>>> 32f595b625bbd7fafb6d459949a17517e8078c79
     return Container();
   }
 }
